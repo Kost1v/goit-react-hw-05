@@ -1,23 +1,41 @@
-import userData from "../userData.json";
-import friends from "../friends.json";
-import transactions from "../transactions.json";
+import { Suspense, lazy } from "react";
+import { Route, Routes } from "react-router-dom";
+// import Navigation from "./Navigation/Navigation";
+// import HomePage from "../pages/HomePage/HomePage";
+// import MoviePage from "../pages/MoviesPage/MoviesPage";
+// import MovieDetailsPage from "../pages/MovieDetailsPage/MovieDetailsPage";
+// import MovieCast from "./MovieCast/MovieCast";
+// import MovieReviews from "./MovieReviews/MovieReviews";
+// import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
-import Profile from "./Profile/Profile";
-import FriendList from "./FriendList/FriendList"
-import TransactionHistory from "./TransactionHistory/TransactionHistory"
+const Navigation = lazy(() => import("./Navigation/Navigation"));
+const HomePage = lazy(() => import("../pages/HomePage/HomePage"));
+const MoviePage = lazy(() => import("../pages/MoviesPage/MoviesPage"));
+const MovieDetailsPage = lazy(() =>
+  import("../pages/MovieDetailsPage/MovieDetailsPage")
+);
+const MovieCast = lazy(() => import("./MovieCast/MovieCast"));
+const MovieReviews = lazy(() => import("./MovieReviews/MovieReviews"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage/NotFoundPage"));
 
 const App = () => {
   return (
     <>
-      <Profile
-        name={userData.username}
-        tag={userData.tag}
-        location={userData.location}
-        image={userData.avatar}
-        stats={userData.stats}
-      />
-      <FriendList friends={friends} />
-      <TransactionHistory items={transactions} />
+      <Navigation />
+      <main>
+        <Suspense>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/movies" element={<MoviePage />} />
+            <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
+              <Route path="cast" element={<MovieCast />} />
+              <Route path="reviews" element={<MovieReviews />} />
+            </Route>
+
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+      </main>
     </>
   );
 };
